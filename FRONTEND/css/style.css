@@ -1,0 +1,62 @@
+.gradientbg {
+    background: linear-gradient(135deg, #3a2e57 0%, #3c60e9 100%);
+}
+.navbar {
+    background-color: #25292d;
+}
+
+.btn-outline-green {
+    color: #4ade80 !important;
+    border-color: #4ade80 !important;
+}
+
+.btn-outline-green:hover,
+.btn-outline-green:focus,
+.btn-outline-green:active {
+    color: white !important;
+    background-color: #4ade80 !important;
+    border-color: #4ade80 !important;
+}
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+.h-10 {
+    height: 10%;
+}
+
+.h-90 {
+    height: 90%;
+}
+
+.card-title {
+    border-bottom: 1px solid gray;
+}
+
+#widget-3 .badge {
+    font-size: 1rem;
+    padding: 0.5rem 0.75rem;
+}
+
+#widget-2.card,
+#widget-3.card {
+    height: 420px;
+    overflow-y: auto;
+}
+
+.checked-task {
+    text-decoration: line-through;
+}
+
+.create-task {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+}

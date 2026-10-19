@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <title>Login</title>
+        <!-- Required meta tags -->
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <!-- Bootstrap CSS v5.3.8 -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+            crossorigin="anonymous"
+        />
+        <link rel="stylesheet" href="css/style.css"/>
+        <script>
+            function toggleForms(){
+                let form_login = document.getElementById("formLogin"),
+                    form_register = document.getElementById("formRegister");
+                
+                if(form_register.style.display == 'none'){
+                    form_login.style.display = 'none';
+                    form_register.style.display = 'block';
+                } else {
+                    form_login.style.display = 'block';
+                    form_register.style.display = 'none';
+                }
+            }
+        </script>
+    </head>
+
+    <body class="gradientbg vh-100 d-flex justify-content-center align-items-center">
+        <main>
+            <div style="width: 350px;">
+                <div class="card">
+                    <div class="card-body">
+                        <form id="formLogin" action="./P01_home.html">
+                            <label for="username">Correo</label>
+                            <input type="text" placeholder="test@gmail.com" class="form-control mb-3" required>
+                            <label for="password">Contraseña</label>
+                            <input type="password" placeholder="Password" class="form-control mb-3" required>
+                            <div class="d-flex flex-column align-items-center gap-3 mt-4">   
+                                <button type="submit" class="btn btn-primary px-4 w-50">Iniciar sesión</button>
+                                <button type="button" class="btn btn-secondary px-4 w-50" onclick='toggleForms()'>Registrarse</button>
+                            </div>
+                        </form>
+                        <form id="formRegister" action="javascript:alert('Registro exitoso!')" style="display: none;">
+                            <label for="registerName">Nombre</label>
+                            <input type="text" placeholder="Ethan Orozco" class="form-control mb-3" required>
+                            <label for="registerEmail">Correo</label>
+                            <input type="email" placeholder="test@gmail.com" class="form-control mb-3" required>
+                            <label for="registerPassword">Contraseña</label>
+                            <input type="password" maxLength="16" placeholder="Password" class="form-control mb-3" required>
+                            <label for="registerConfirmPassword">Confirmar contraseña</label>
+                            <input type="password" placeholder="Confirm Password" class="form-control mb-3" required>
+                            <div class="d-flex flex-column align-items-center gap-3 mt-4">
+                                <button type="submit" class="btn btn-primary px=4 w-50">Crear cuenta</button>
+                                <button type="button" class="btn btn-secondary px-4 w-50" onclick='toggleForms()'>Iniciar sesión</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!-- Bootstrap JavaScript Bundle (includes Popper) -->
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+            crossorigin="anonymous"
+        ></script>
+        <script src="js/main.js"></script>
+    </body>
+</html>

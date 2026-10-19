@@ -1,0 +1,312 @@
+# No repetir los POST exitosos sin reiniciar los datos: correos y contraseñas son únicos.
+#--------------- PUNTO 1 ---------------
+
+### Raíz sin auth: 200, HTML de login
+GET http://localhost:3000/ HTTP/1.1
+
+### Raíz con auth: 200, HTML de home
+GET http://localhost:3000/ HTTP/1.1
+x-auth: test
+
+### home sin auth: 401
+GET http://localhost:3000/home.html HTTP/1.1
+
+### home con auth: 200, HTML correspondiente
+GET http://localhost:3000/home.html HTTP/1.1
+x-auth: test
+
+### tasks sin auth: 401
+GET http://localhost:3000/tasks.html HTTP/1.1
+
+### tasks con auth: 200, HTML correspondiente
+GET http://localhost:3000/tasks.html HTTP/1.1
+x-auth: test
+
+### Login sin auth: 200, HTML de login
+GET http://localhost:3000/login.html HTTP/1.1
+
+
+#--------------- PUNTO 2 ---------------
+
+### Consultar usuarios: 200, colección vacía al iniciar
+GET http://localhost:3000/users?page=1&limit=10 HTTP/1.1
+x-auth: admin_auth
+
+### Consultar usuarios sin auth: 401
+GET http://localhost:3000/users?page=1&limit=10 HTTP/1.1
+
+### Consultar usuarios con auth incorrecta: 401
+GET http://localhost:3000/users?page=1&limit=10 HTTP/1.1
+x-auth: incorrecta
+
+
+#--------------- PUNTO 3 ---------------
+
+### Crear usuario 1: registro exitoso, sin x-auth
+POST http://localhost:3000/users HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Usuario 1",
+  "email": "usuario1@example.com",
+  "password": "prueba001",
+  "confirm_password": "prueba001"
+}
+
+### Crear usuario 2: registro exitoso, sin x-auth
+POST http://localhost:3000/users HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Usuario 2",
+  "email": "usuario2@example.com",
+  "password": "prueba002",
+  "confirm_password": "prueba002"
+}
+
+### Crear usuario 3: registro exitoso, sin x-auth
+POST http://localhost:3000/users HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Usuario 3",
+  "email": "usuario3@example.com",
+  "password": "prueba003",
+  "confirm_password": "prueba003"
+}
+
+### Registro con confirmación distinta: 400, no crea usuario
+POST http://localhost:3000/users HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "No guardar",
+  "email": "no-guardar@example.com",
+  "password": "prueba004",
+  "confirm_password": "diferente"
+}
+
+### Registro con correo repetido: 400, no crea usuario
+POST http://localhost:3000/users HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "No guardar",
+  "email": "usuario1@example.com",
+  "password": "prueba004",
+  "confirm_password": "prueba004"
+}
+
+### Registro con contraseña repetida: 400, no crea usuario
+POST http://localhost:3000/users HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "No guardar",
+  "email": "no-guardar@example.com",
+  "password": "prueba001",
+  "confirm_password": "prueba001"
+}
+
+# PENDIENTE del punto 3: habilitar estas peticiones al implementar GET /tasks y GET /tags.
+# Deben devolver colecciones vacías.
+# GET http://localhost:3000/tasks?page=1&limit=10 HTTP/1.1
+# x-auth: prueba002
+# GET http://localhost:3000/tags?page=1&limit=10 HTTP/1.1
+# x-auth: prueba003
+
+
+#--------------- PUNTO 4 ---------------
+
+### Consultar usuario ID 2: 200, usuario 2
+GET http://localhost:3000/users/2 HTTP/1.1
+x-auth: prueba002
+
+### Consultar usuario ID 2 sin auth: 401
+GET http://localhost:3000/users/2 HTTP/1.1
+
+### Consultar usuario ID 2 con contraseña de otro usuario: 401
+GET http://localhost:3000/users/2 HTTP/1.1
+x-auth: prueba001
+
+### Consultar usuario inexistente: 404
+GET http://localhost:3000/users/9999 HTTP/1.1
+x-auth: prueba002
+
+
+#--------------- PUNTO 5 ---------------
+
+### Página 1, límite 2: 200, usuarios 1 y 2
+GET http://localhost:3000/users?page=1&limit=2 HTTP/1.1
+x-auth: admin_auth
+
+### Página 1, límite 2 sin auth: 401
+GET http://localhost:3000/users?page=1&limit=2 HTTP/1.1
+
+
+#--------------- PUNTO 6 ---------------
+
+### Editar usuario ID 3 con tu nombre completo: 200, usuario actualizado
+PATCH http://localhost:3000/users/3 HTTP/1.1
+x-auth: prueba003
+Content-Type: application/json
+
+{
+  "name": "Ethan Gabriel Orozco Madrid"
+}
+
+### Confirmar que el nombre del usuario 3 quedó guardado: 200
+GET http://localhost:3000/users/3 HTTP/1.1
+x-auth: prueba003
+
+### Editar sin auth: 401, no cambia datos
+PATCH http://localhost:3000/users/3 HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "No guardar"
+}
+
+### Editar con contraseña incorrecta: 401
+PATCH http://localhost:3000/users/3 HTTP/1.1
+x-auth: incorrecta
+Content-Type: application/json
+
+{
+  "name": "No guardar"
+}
+
+### Editar usuario inexistente: 404
+PATCH http://localhost:3000/users/9999 HTTP/1.1
+x-auth: prueba003
+Content-Type: application/json
+
+{
+  "name": "No guardar"
+}
+
+### Editar sin campos: 400
+PATCH http://localhost:3000/users/3 HTTP/1.1
+x-auth: prueba003
+Content-Type: application/json
+
+{}
+
+### Editar con nombre vacío: 400
+PATCH http://localhost:3000/users/3 HTTP/1.1
+x-auth: prueba003
+Content-Type: application/json
+
+{
+  "name": ""
+}
+
+### Editar con correo de otro usuario: 400
+PATCH http://localhost:3000/users/3 HTTP/1.1
+x-auth: prueba003
+Content-Type: application/json
+
+{
+  "email": "usuario1@example.com"
+}
+
+### Editar con contraseña de otro usuario: 400
+PATCH http://localhost:3000/users/3 HTTP/1.1
+x-auth: prueba003
+Content-Type: application/json
+
+{
+  "password": "prueba001"
+}
+
+### Editar con contraseña corta: 400
+PATCH http://localhost:3000/users/3 HTTP/1.1
+x-auth: prueba003
+Content-Type: application/json
+
+{
+  "password": "123"
+}
+
+
+#--------------- PUNTO 7 ---------------
+
+### Eliminar usuario ID 1 sin auth: 401, no elimina
+DELETE http://localhost:3000/users/1 HTTP/1.1
+
+### Eliminar usuario ID 1 con contraseña incorrecta: 401, no elimina
+DELETE http://localhost:3000/users/1 HTTP/1.1
+x-auth: incorrecta
+
+### Eliminar usuario inexistente: 404
+DELETE http://localhost:3000/users/9999 HTTP/1.1
+x-auth: prueba001
+
+### Eliminar usuario ID 1: 200, mensaje y usuario eliminado
+DELETE http://localhost:3000/users/1 HTTP/1.1
+x-auth: prueba001
+
+### Consultar todos los usuarios: 200, quedan usuarios 2 y 3
+GET http://localhost:3000/users?page=1&limit=10 HTTP/1.1
+x-auth: admin_auth
+
+### Consultar usuarios sin auth después de eliminar: 401
+GET http://localhost:3000/users?page=1&limit=10 HTTP/1.1
+
+### Consultar usuario eliminado: 404
+GET http://localhost:3000/users/1 HTTP/1.1
+x-auth: prueba001
+
+### Eliminar nuevamente usuario ID 1: 404
+DELETE http://localhost:3000/users/1 HTTP/1.1
+x-auth: prueba001
+
+
+#--------------- PUNTO 8 ---------------
+
+# Pendiente: ruta aún no implementada.
+
+
+#--------------- PUNTO 9 ---------------
+
+# Pendiente: ruta aún no implementada.
+
+
+#--------------- PUNTO 10 ---------------
+
+# Pendiente: ruta aún no implementada.
+
+
+#--------------- PUNTO 11 ---------------
+
+# Pendiente: ruta aún no implementada.
+
+
+#--------------- PUNTO 12 ---------------
+
+# Pendiente: ruta aún no implementada.
+
+
+#--------------- PUNTO 13 ---------------
+
+# Pendiente: ruta aún no implementada.
+
+
+#--------------- PUNTO 14 ---------------
+
+# Pendiente: ruta aún no implementada.
+
+
+#--------------- PUNTO 15 ---------------
+
+# Pendiente: ruta aún no implementada.
+
+
+#--------------- PUNTO 16 ---------------
+
+# Pendiente: ruta aún no implementada.
+
+
+#--------------- PUNTO 17 ---------------
+
+# Pendiente: ruta aún no implementada.
